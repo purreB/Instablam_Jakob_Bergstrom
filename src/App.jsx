@@ -1,45 +1,56 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const {
+    offlineReady: [offlineReady, setOfflineReady],
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r) {
+      console.log('SW Registered: ' + r);
+    },
+    onRegisterError(error) {
+      console.log('SW registration error', error);
+    },
+  });
+
+  const close = () => {
+    setOfflineReady(false);
+    setNeedRefresh(false);
+  };
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
+      {(offlineReady || needRefresh) && (
+        <div className="ReloadPrompt-toast">
+          <div className="ReloadPrompt-message">
+            {offlineReady ? (
+              <span>App ready to work offline</span>
+            ) : (
+              <span>
+                New content available, click on reload button to update.
+              </span>
+            )}
+          </div>
+          {needRefresh && (
+            <button
+              className="ReloadPrompt-toast-button"
+              onClick={() => updateServiceWorker(true)}
+            >
+              Reload
+            </button>
+          )}
+          <button className="ReloadPrompt-toast-button" onClick={() => close()}>
+            Close
           </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+        </div>
+      )}
+      <div className="ReloadPrompt-date">{Date.now()}</div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
