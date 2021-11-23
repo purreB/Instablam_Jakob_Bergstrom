@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import './App.css';
 import { useRegisterSW } from 'virtual:pwa-register/react';
+import Navbar from './components/Navbar';
+import Camera from './components/Camera';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -24,6 +26,8 @@ function App() {
 
   return (
     <div className="App">
+      <Navbar />
+      <Camera />
       {(offlineReady || needRefresh) && (
         <div className="ReloadPrompt-toast">
           <div className="ReloadPrompt-message">

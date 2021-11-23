@@ -4,8 +4,8 @@ function Navbar() {
   return (
     <>
       <nav>
-        <a href=""></a>
-        <a href=""></a>
+        <a href="">Camera</a>
+        <a href="">Gallery</a>
       </nav>
     </>
   );
