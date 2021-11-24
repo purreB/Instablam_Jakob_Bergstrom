@@ -6,10 +6,24 @@ function Camera() {
   const [imgSrc, setImgSrc] = useState(null);
   const [md, setmd] = useState(false);
   const [imgArr, setimgArr] = useState([]);
+  const [canUsePos, setcanUsePos] = useState(false);
 
   useEffect(() => {
-    console.log(imgArr);
-  }, [imgArr]);
+    console.log('HEJ');
+    askLocationPermisson();
+  }, []);
+
+  function askLocationPermisson() {
+    try {
+      let geo = navigator.geolocation;
+      geo.getCurrentPosition((pos) => {
+        dispatchEvent({ type: 'SET_GEO_IS_ALLOWED' });
+      });
+      setcanUsePos(true);
+    } catch (error) {
+      setcanUsePos(false);
+    }
+  }
 
   const handleCameraToggle = () => {
     if (md) {
@@ -32,7 +46,8 @@ function Camera() {
     saveToStorage(imageSrc);
   }
 
-  async function saveToStorage(imgSrc) {
+  function getDate() {
+    // Get Date
     let current = new Date();
     let cDate =
       current.getFullYear() +
@@ -46,11 +61,58 @@ function Camera() {
       current.getMinutes() +
       ':' +
       current.getSeconds();
-    let dateTime = cDate + ' ' + cTime;
+    let dateTime = '';
+    return (dateTime = cDate + ' ' + cTime);
+  }
+
+  async function getPos() {
+    // Get Coords
+    if (canUsePos) {
+      navigator.geolocation.getCurrentPosition(onSuccess, (error) => {
+        console.log(error.message);
+      });
+    } else {
+      console.log('No location');
+    }
+  }
+
+  async function onSuccess(pos) {
+    console.log('Current position is: ', pos);
+    const address = await lookupAddress(
+      pos.coords.latitude,
+      pos.coords.longitude
+    );
+    if (address) {
+      return address.city;
+    }
+  }
+
+  async function lookupAddress(lat, lon) {
+    try {
+      const res = await fetch(
+        `https://geocode.xyz/${lat},${lon}?geoit=json&auth=727136109069832636568x99446`
+      );
+      const data = await res.json();
+
+      if (data.error) {
+        console.log(data.error.message);
+        return null;
+      }
+
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async function saveToStorage(imgSrc) {
+    let posAddress = await getPos();
     const imgObj = {
       img: imgSrc,
-      position: '',
-      date: dateTime,
+      position: posAddress,
+      date: getDate(),
     };
     addObjToArray(imgObj);
     const json = JSON.stringify(imgArr);
@@ -73,6 +135,8 @@ function Camera() {
         <button onClick={capture}>Capture Photo</button>
         {imgSrc && <img src={imgSrc} />}
       </section>
+
+      <section id="Gallery"></section>
     </>
   );
 }

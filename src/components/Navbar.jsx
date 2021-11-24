@@ -5,8 +5,8 @@ function Navbar() {
   return (
     <>
       <nav>
-        <a href="">Camera</a>
-        <a href="">Gallery</a>
+        <a href="#Camera">Camera</a>
+        <a href="#Gallery">Gallery</a>
       </nav>
     </>
   );
