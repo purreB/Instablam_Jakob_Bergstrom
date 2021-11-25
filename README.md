@@ -1,4 +1,4 @@
 # Instablam_Jakob_Bergstrom
-## Quick thoughts: Start by saving the gallery in localStorage, to get the date of when the picture was taken, add a date.now() function to when you press "Take pic" and save it together with the picture.
-### In other words, gallery is array of objects, inside every obj is properties: Picture, Date, Position. Or maybe save array of obj inside a state? However i think localStorage works best
-### localStorage now works, an array of objects is saved with img, position (closest city) and current date when the picture was taken, now need to render them out and add remove img functionality, aswell as download img functionality.
+# Notes for teacher:
+## Tested in Firefox, Chrome as well as a PWA, it also works on all browsers except for Internet Explorer, Opera Mini and KaiOS Browser. In other words, it should work even on safari. You can take pictures even when disabling position, the picture location will render as: "User did not allow position" The app locates the closest city / town when you take a picture when allowing geolocation.
+### Bug: The first press of "take picture" will not work, i.e, press the button twice when first using the application.
