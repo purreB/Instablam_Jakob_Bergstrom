@@ -101,6 +101,7 @@ function Camera() {
     if (currentPos != undefined) {
       let currentCity = currentPos.city;
       const imgObj = {
+        id: Math.random().toString(36).substr(2, 9),
         img: imgSrc,
         position: currentCity,
         date: getDate(),
@@ -135,7 +136,6 @@ function Camera() {
           {md ? 'Turn Camera Off' : 'Turn Camera On'}
         </button>
         <button onClick={capture}>Capture Photo</button>
-        {imgSrc && <img src={imgSrc} />}
       </section>
     </>
   );

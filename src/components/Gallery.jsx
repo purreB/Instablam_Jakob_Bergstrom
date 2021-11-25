@@ -5,7 +5,8 @@ function Gallery() {
   const [showGalleryBtn, setshowGalleryBtn] = useState(false);
 
   useEffect(() => {
-    console.log(fetchedImgs);
+    const json = JSON.stringify(fetchedImgs);
+    localStorage.setItem('Images', json);
   }, [fetchedImgs]);
 
   async function showGallery() {
@@ -15,19 +16,33 @@ function Gallery() {
     setshowGalleryBtn(true);
   }
 
+  const deleteImg = (idToDelete) => {
+    const filteredImgs = fetchedImgs.filter(
+      (fetchedImg) => fetchedImg.id !== idToDelete
+    );
+    setfetchedImgs(filteredImgs);
+  };
+
   return (
     <>
       <section id="Gallery">
         <button onClick={showGallery}>Show Gallery</button>
-        {showGalleryBtn
-          ? fetchedImgs.map((fetchedImgs) => {
-              <div key={fetchedImgs.img}>
-                {<img src={fetchedImgs.img} alt="Picture from gallery" />}
-                <p>Time Taken: {fetchedImgs.date}</p>
-                <p>Picture taken at: {fetchedImgs.pos}</p>
-              </div>;
-            })
-          : null}
+        {showGalleryBtn ? (
+          fetchedImgs.map((fetchedImg) => {
+            return (
+              <div key={fetchedImg.id}>
+                <img src={fetchedImg.img} alt="Picture from gallery" />
+                <p>Time Taken: {fetchedImg.date}</p>
+                <p>Picture taken at: {fetchedImg.position}</p>
+                <button onClick={() => deleteImg(fetchedImg.id)}>
+                  Remove Image
+                </button>
+              </div>
+            );
+          })
+        ) : (
+          <p>No images in gallery</p>
+        )}
       </section>
     </>
   );
