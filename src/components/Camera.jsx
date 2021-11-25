@@ -6,7 +6,7 @@ function Camera() {
   const [imgSrc, setImgSrc] = useState(null);
   const [md, setmd] = useState(false);
   const [imgArr, setimgArr] = useState([]);
-  const [canUsePos, setcanUsePos] = useState(false);
+  const [currentPos, setcurrentPos] = useState();
 
   useEffect(() => {
     console.log('HEJ');
@@ -17,11 +17,10 @@ function Camera() {
     try {
       let geo = navigator.geolocation;
       geo.getCurrentPosition((pos) => {
-        dispatchEvent({ type: 'SET_GEO_IS_ALLOWED' });
+        onSuccess(pos);
       });
-      setcanUsePos(true);
     } catch (error) {
-      setcanUsePos(false);
+      console.log(error.message);
     }
   }
 
@@ -65,17 +64,6 @@ function Camera() {
     return (dateTime = cDate + ' ' + cTime);
   }
 
-  async function getPos() {
-    // Get Coords
-    if (canUsePos) {
-      navigator.geolocation.getCurrentPosition(onSuccess, (error) => {
-        console.log(error.message);
-      });
-    } else {
-      console.log('No location');
-    }
-  }
-
   async function onSuccess(pos) {
     console.log('Current position is: ', pos);
     const address = await lookupAddress(
@@ -83,7 +71,9 @@ function Camera() {
       pos.coords.longitude
     );
     if (address) {
-      return address.city;
+      setcurrentPos(address);
+    } else {
+      setcurrentPos();
     }
   }
 
@@ -108,15 +98,27 @@ function Camera() {
   }
 
   async function saveToStorage(imgSrc) {
-    let posAddress = await getPos();
-    const imgObj = {
-      img: imgSrc,
-      position: posAddress,
-      date: getDate(),
-    };
-    addObjToArray(imgObj);
-    const json = JSON.stringify(imgArr);
-    localStorage.setItem('Images', json);
+    if (currentPos != undefined) {
+      let currentCity = currentPos.city;
+      const imgObj = {
+        img: imgSrc,
+        position: currentCity,
+        date: getDate(),
+      };
+      addObjToArray(imgObj);
+      const json = JSON.stringify(imgArr);
+      localStorage.setItem('Images', json);
+    } else {
+      let currentCity = 'User did not allow position';
+      const imgObj = {
+        img: imgSrc,
+        position: currentCity,
+        date: getDate(),
+      };
+      addObjToArray(imgObj);
+      const json = JSON.stringify(imgArr);
+      localStorage.setItem('Images', json);
+    }
   }
 
   return (
