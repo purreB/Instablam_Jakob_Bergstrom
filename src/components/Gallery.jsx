@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createElement } from 'react';
 
 function Gallery() {
   let [fetchedImgs, setfetchedImgs] = useState([]);
@@ -23,6 +23,16 @@ function Gallery() {
     setfetchedImgs(filteredImgs);
   };
 
+  function downloadImg(imgToDownload) {
+    const blob = imgToDownload;
+    const url = URL.createObjectURL(blob);
+    let a = createElement(
+      'a',
+      { href: `${url}`, download: 'Image.jpeg' },
+      'Click to download'
+    );
+  }
+
   return (
     <>
       <section id="Gallery">
@@ -37,6 +47,9 @@ function Gallery() {
                 <button onClick={() => deleteImg(fetchedImg.id)}>
                   Remove Image
                 </button>
+                <a download="Image.jpeg" href={fetchedImg.img}>
+                  Download
+                </a>
               </div>
             );
           })
