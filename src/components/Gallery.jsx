@@ -23,16 +23,6 @@ function Gallery() {
     setfetchedImgs(filteredImgs);
   };
 
-  function downloadImg(imgToDownload) {
-    const blob = imgToDownload;
-    const url = URL.createObjectURL(blob);
-    let a = createElement(
-      'a',
-      { href: `${url}`, download: 'Image.jpeg' },
-      'Click to download'
-    );
-  }
-
   return (
     <>
       <section id="Gallery">
