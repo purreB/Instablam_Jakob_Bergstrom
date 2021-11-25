@@ -3,6 +3,7 @@ import './App.css';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import Navbar from './components/Navbar';
 import Camera from './components/Camera';
+import Gallery from './components/Gallery';
 
 function App() {
   const { updateServiceWorker } = useRegisterSW({
@@ -18,6 +19,7 @@ function App() {
     <div className="App">
       <Navbar />
       <Camera />
+      <Gallery />
     </div>
   );
 }

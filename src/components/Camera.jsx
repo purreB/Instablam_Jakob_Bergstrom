@@ -137,8 +137,6 @@ function Camera() {
         <button onClick={capture}>Capture Photo</button>
         {imgSrc && <img src={imgSrc} />}
       </section>
-
-      <section id="Gallery"></section>
     </>
   );
 }
